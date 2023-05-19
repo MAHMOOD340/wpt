@@ -7,22 +7,33 @@
   <script>
     'use strict';
     const same_origin_src = '/shared-storage/resources/shared-storage-permissions-policy-helper.html';
+    const same_origin_writable_src =
+      '/shared-storage/resources/shared-storage-writable-permissions-policy-helper.html';
     const cross_origin_src = 'https://{{domains[www]}}:{{ports[https][0]}}' +
       same_origin_src;
+    const cross_origin_writable_src = 'https://{{domains[www]}}:{{ports[https][0]}}' +
+      same_origin_writable_src;
     const header = 'Default permissions policy';
 
     promise_test(async t => {
       const allowed = await AreSharedStorageMethodsAllowedByPermissionsPolicy();
       assert_true(allowed);
+      const writable_allowed =
+          await IsSharedStorageWritableAllowedByPermissionsPolicy();
+      assert_true(writable_allowed);
     }, header + ' allows sharedStorage in the current page.');
 
     async_test(t => {
       test_feature_availability('shared-storage', t, same_origin_src,
           expect_feature_available_default);
+      test_feature_availability('sharedStorageWritable', t, same_origin_writable_src,
+          expect_feature_available_default);
     }, header + ' allows sharedStorage in same-origin iframes.');
 
     async_test(t => {
       test_feature_availability('shared-storage', t, cross_origin_src,
+          expect_feature_available_default);
+      test_feature_availability('sharedStorageWritable', t, cross_origin_writable_src,
           expect_feature_available_default);
     }, header + ' allows sharedStorage in cross-origin iframes.');
   </script>

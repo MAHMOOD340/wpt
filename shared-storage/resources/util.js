@@ -85,3 +85,23 @@ async function AreSharedStorageMethodsAllowedByPermissionsPolicy() {
 
   return false;
 }
+
+async function IsSharedStorageWritableAllowedByPermissionsPolicy() {
+  const errorMessage = `Failed to construct 'Request': sharedStorage ` +
+      `operations require that the "shared-storage" Permissions Policy ` +
+      `feature be enabled.`;
+  let allowedByPermissionsPolicy = true;
+  try {
+    const new_request =
+        new Request('simple-module.js', {sharedStorageWritable: true});
+  } catch (e) {
+    assert_equals(e.name, 'NotAllowedError');
+    if (e.message === errorMessage) {
+      allowedByPermissionsPolicy = false;
+    } else {
+      assert_unreached('failed with different error message: ' + e.message);
+    }
+  }
+
+  return allowedByPermissionsPolicy;
+}
